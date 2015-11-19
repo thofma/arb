@@ -27,10 +27,10 @@
 
 int main()
 {
-    long iter;
+    slong iter;
     flint_rand_t state;
 
-    printf("get_d....");
+    flint_printf("get_d....");
     fflush(stdout);
 
     flint_randinit(state);
@@ -40,20 +40,30 @@ int main()
     {
         arf_t x, z;
         double y;
+        arf_rnd_t rnd;
 
         arf_init(x);
         arf_init(z);
 
+        switch (n_randint(state, 4))
+        {
+            case 0:  rnd = ARF_RND_DOWN; break;
+            case 1:  rnd = ARF_RND_UP; break;
+            case 2:  rnd = ARF_RND_FLOOR; break;
+            case 3:  rnd = ARF_RND_CEIL; break;
+            default: rnd = ARF_RND_NEAR; break;
+        }
+
         arf_randtest_special(x, state, 53, 8);
-        y = arf_get_d(x, ARF_RND_DOWN);
+        y = arf_get_d(x, rnd);
         arf_set_d(z, y);
 
         if (!arf_equal(x, z))
         {
-            printf("FAIL:\n\n");
-            printf("x = "); arf_print(x); printf("\n\n");
-            printf("y = %.17g\n\n", y);
-            printf("z = "); arf_print(z); printf("\n\n");
+            flint_printf("FAIL:\n\n");
+            flint_printf("x = "); arf_print(x); flint_printf("\n\n");
+            flint_printf("y = %.17g\n\n", y);
+            flint_printf("z = "); arf_print(z); flint_printf("\n\n");
             abort();
         }
 
@@ -89,11 +99,11 @@ int main()
 
         if (!arf_equal(w, z))
         {
-            printf("FAIL:\n\n");
-            printf("x = "); arf_print(x); printf("\n\n");
-            printf("y = %.17g\n\n", y);
-            printf("z = "); arf_print(z); printf("\n\n");
-            printf("w = "); arf_print(w); printf("\n\n");
+            flint_printf("FAIL:\n\n");
+            flint_printf("x = "); arf_print(x); flint_printf("\n\n");
+            flint_printf("y = %.17g\n\n", y);
+            flint_printf("z = "); arf_print(z); flint_printf("\n\n");
+            flint_printf("w = "); arf_print(w); flint_printf("\n\n");
             abort();
         }
 
@@ -102,9 +112,58 @@ int main()
         arf_clear(w);
     }
 
+    /* compare with mpfr */
+    for (iter = 0; iter < 100000; iter++)
+    {
+        arf_t x, r1, r2;
+        arf_rnd_t rnd;
+        mpfr_t t;
+        double d1, d2;
+
+        arf_init(x);
+        arf_init(r1);
+        arf_init(r2);
+        mpfr_init2(t, 300);
+
+        arf_randtest_special(x, state, 300, 20);
+        arf_get_mpfr(t, x, MPFR_RNDD);
+
+        switch (n_randint(state, 4))
+        {
+            case 0:  rnd = ARF_RND_DOWN; break;
+            case 1:  rnd = ARF_RND_UP; break;
+            case 2:  rnd = ARF_RND_FLOOR; break;
+            case 3:  rnd = ARF_RND_CEIL; break;
+            default: rnd = ARF_RND_NEAR; break;
+        }
+
+        d1 = arf_get_d(x, rnd);
+        d2 = mpfr_get_d(t, rnd_to_mpfr(rnd));
+
+        arf_set_d(r1, d1);
+        arf_set_d(r2, d2);
+
+        if (!arf_equal(r1, r2))
+        {
+            flint_printf("FAIL:\n\n");
+            flint_printf("rnd = %i\n\n", rnd);
+            flint_printf("x = "); arf_print(x); flint_printf("\n\n");
+            flint_printf("d1 = %.17g\n\n", d1);
+            flint_printf("d2 = %.17g\n\n", d2);
+            flint_printf("r1 = "); arf_print(r1); flint_printf("\n\n");
+            flint_printf("r2 = "); arf_print(r2); flint_printf("\n\n");
+            abort();
+        }
+
+        arf_clear(x);
+        arf_clear(r1);
+        arf_clear(r2);
+        mpfr_clear(t);
+    }
+
     flint_randclear(state);
     flint_cleanup();
-    printf("PASS\n");
+    flint_printf("PASS\n");
     return EXIT_SUCCESS;
 }
 

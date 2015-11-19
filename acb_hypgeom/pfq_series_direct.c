@@ -26,9 +26,9 @@
 #include "acb_hypgeom.h"
 
 void
-_acb_poly_reciprocal_majorant(arb_ptr res, acb_srcptr vec, long len, long prec)
+_acb_poly_reciprocal_majorant(arb_ptr res, acb_srcptr vec, slong len, slong prec)
 {
-    long i;
+    slong i;
 
     for (i = 0; i < len; i++)
     {
@@ -47,7 +47,7 @@ _acb_poly_reciprocal_majorant(arb_ptr res, acb_srcptr vec, long len, long prec)
 }
 
 void
-acb_poly_reciprocal_majorant(arb_poly_t res, const acb_poly_t poly, long prec)
+acb_poly_reciprocal_majorant(arb_poly_t res, const acb_poly_t poly, slong prec)
 {
     arb_poly_fit_length(res, poly->length);
     _acb_poly_reciprocal_majorant(res->coeffs, poly->coeffs, poly->length, prec);
@@ -58,7 +58,7 @@ acb_poly_reciprocal_majorant(arb_poly_t res, const acb_poly_t poly, long prec)
 /* F = 1 + U + U^2 + ... = 1/(1-U) assuming that U[0] is positive;
    indeterminate if not convergent */
 static void
-arb_poly_geometric_sum(arb_poly_t F, const arb_poly_t U, long len, long prec)
+arb_poly_geometric_sum(arb_poly_t F, const arb_poly_t U, slong len, slong prec)
 {
     if (U->length == 0)
     {
@@ -89,12 +89,12 @@ arb_poly_geometric_sum(arb_poly_t F, const arb_poly_t U, long len, long prec)
 */
 void
 acb_hypgeom_pfq_series_bound_factor(arb_poly_t F,
-    const acb_poly_struct * a, long p,
-    const acb_poly_struct * b, long q, 
+    const acb_poly_struct * a, slong p,
+    const acb_poly_struct * b, slong q, 
     const acb_poly_t z,
-    long n, long len, long prec)
+    slong n, slong len, slong prec)
 {
-    long i;
+    slong i;
 
     arb_poly_t T, U, V;
     acb_poly_t BN, AB;
@@ -162,14 +162,14 @@ acb_hypgeom_pfq_series_bound_factor(arb_poly_t F,
 
 void
 acb_hypgeom_pfq_series_sum_forward(acb_poly_t s, acb_poly_t t,
-    const acb_poly_struct * a, long p,
-    const acb_poly_struct * b, long q,
+    const acb_poly_struct * a, slong p,
+    const acb_poly_struct * b, slong q,
     const acb_poly_t z, int regularized,
-    long n, long len, long prec)
+    slong n, slong len, slong prec)
 {
     acb_poly_t u, v;
     acb_poly_t tmp;
-    long k, i;
+    slong k, i;
 
     acb_poly_init(u);
     acb_poly_init(v);
@@ -303,20 +303,68 @@ acb_hypgeom_pfq_series_sum_forward(acb_poly_t s, acb_poly_t t,
 
 void
 acb_hypgeom_pfq_series_direct(acb_poly_t res,
-    const acb_poly_struct * a, long p,
-    const acb_poly_struct * b, long q,
+    const acb_poly_struct * a, slong p,
+    const acb_poly_struct * b, slong q,
     const acb_poly_t z, int regularized,
-    long n, long len, long prec)
+    slong n, slong len, slong prec)
 {
     acb_poly_t s, t, err;
     arb_poly_t C, T;
-    long i;
+    slong i;
     int is_real;
+    int terminating;
 
     /* default algorithm to choose number of terms */
     if (n < 0)
     {
         n = acb_hypgeom_pfq_series_choose_n(a, p, b, q, z, len, prec);
+    }
+
+    terminating = 0;
+
+    /* check if it terminates due to a root of the numerator */
+    for (i = 0; i < p; i++)
+    {
+        if (acb_poly_length(a + i) == 0 && n > 0)
+        {
+            terminating = 1;
+        }
+        else if (acb_poly_length(a + i) == 1)
+        {
+            acb_srcptr c = acb_poly_get_coeff_ptr(a + i, 0);
+
+            if (acb_is_int(c) && arb_is_negative(acb_realref(c)) &&
+                arf_cmpabs_ui(arb_midref(acb_realref(c)), n) < 0)
+            {
+                terminating = 1;
+            }
+        }
+    }
+
+    /* check if it terminates (to order n) due to z */
+    /* the following tests could be made stronger... */
+    if (z->length == 0 && n >= 1)
+    {
+        terminating = 1;
+    }
+    else if (!terminating && z->length > 0 && acb_is_zero(z->coeffs) && n >= len)
+    {
+        if (regularized)
+        {
+            terminating = 1;
+        }
+        else
+        {
+            terminating = 1;
+
+            for (i = 0; i < q; i++)
+            {
+                acb_srcptr c = acb_poly_get_coeff_ptr(b + i, 0);
+
+                if (!arb_is_positive(acb_realref(c)) && acb_contains_int(c))
+                    terminating = 0;
+            }
+        }
     }
 
     acb_poly_init(s);
@@ -327,7 +375,7 @@ acb_hypgeom_pfq_series_direct(acb_poly_t res,
 
     acb_hypgeom_pfq_series_sum_forward(s, t, a, p, b, q, z, regularized, n, len, prec);
 
-    if (acb_poly_length(t) != 0)
+    if (!terminating)
     {
         is_real = acb_poly_is_real(z);
         for (i = 0; i < p; i++)
@@ -338,7 +386,17 @@ acb_hypgeom_pfq_series_direct(acb_poly_t res,
         acb_poly_majorant(T, t, MAG_BITS);
         acb_hypgeom_pfq_series_bound_factor(C, a, p, b, q, z, n, len, MAG_BITS);
 
-        arb_poly_mullow(T, T, C, len, MAG_BITS);
+        if (!_arb_vec_is_finite(T->coeffs, T->length) ||
+            !_arb_vec_is_finite(C->coeffs, C->length))
+        {
+            arb_poly_fit_length(T, len);
+            _arb_vec_indeterminate(T->coeffs, len);
+            _arb_poly_set_length(T, len);
+        }
+        else
+        {
+            arb_poly_mullow(T, T, C, len, MAG_BITS);
+        }
 
         /* create polynomial of errors */
         acb_poly_fit_length(err, len);

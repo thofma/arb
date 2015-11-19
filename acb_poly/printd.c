@@ -26,18 +26,18 @@
 #include "acb_poly.h"
 
 void
-acb_poly_printd(const acb_poly_t poly, long digits)
+acb_poly_printd(const acb_poly_t poly, slong digits)
 {
-    long i;
+    slong i;
 
-    printf("[");
+    flint_printf("[");
 
     for (i = 0; i < poly->length; i++)
     {
         acb_printd(poly->coeffs + i, digits);
         if (i + 1 < poly->length)
-            printf("\n");
+            flint_printf("\n");
     }
 
-    printf("]");
+    flint_printf("]");
 }

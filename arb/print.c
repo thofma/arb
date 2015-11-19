@@ -29,23 +29,23 @@ void
 arb_print(const arb_t x)
 {
     arf_print(arb_midref(x));
-    printf(" +/- ");
+    flint_printf(" +/- ");
     mag_print(arb_radref(x));
 }
 
 void
-arb_printd(const arb_t x, long digits)
+arb_printd(const arb_t x, slong digits)
 {
     arf_printd(arb_midref(x), FLINT_MAX(digits, 1));
-    printf(" +/- ");
+    flint_printf(" +/- ");
     mag_printd(arb_radref(x), 5);
 }
 
 void
-arb_printn(const arb_t x, long digits, ulong flags)
+arb_printn(const arb_t x, slong digits, ulong flags)
 {
     char * s = arb_get_str(x, digits, flags);
-    printf("%s", s);
+    flint_printf("%s", s);
     flint_free(s);
 }
 

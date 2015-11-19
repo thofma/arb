@@ -37,26 +37,26 @@ arf_print(const arf_t x)
 
         arf_get_fmpz_2exp(man, exp, x);
 
-        printf("(");
+        flint_printf("(");
         fmpz_print(man);
-        printf(" * 2^");
+        flint_printf(" * 2^");
         fmpz_print(exp);
-        printf(")");
+        flint_printf(")");
 
         fmpz_clear(man);
         fmpz_clear(exp);
     }
     else
     {
-        if (arf_is_zero(x)) printf("(0)");
-        else if (arf_is_pos_inf(x)) printf("(+inf)");
-        else if (arf_is_neg_inf(x)) printf("(-inf)");
-        else printf("(nan)");
+        if (arf_is_zero(x)) flint_printf("(0)");
+        else if (arf_is_pos_inf(x)) flint_printf("(+inf)");
+        else if (arf_is_neg_inf(x)) flint_printf("(-inf)");
+        else flint_printf("(nan)");
     }
 }
 
 void
-arf_printd(const arf_t x, long d)
+arf_printd(const arf_t x, slong d)
 {
     if (arf_is_finite(x) && (ARF_EXP(x) <= MPFR_EMIN_MIN + 1 ||
                              ARF_EXP(x) >= MPFR_EMAX_MAX - 1))

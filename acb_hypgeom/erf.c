@@ -27,7 +27,7 @@
 
 /* IMAG: erf(z) = 2z/sqrt(pi) * 1F1(1/2, 3/2, -z^2) */
 void
-acb_hypgeom_erf_1f1a(acb_t res, const acb_t z, long prec)
+acb_hypgeom_erf_1f1a(acb_t res, const acb_t z, slong prec)
 {
     acb_t a, t, w;
     acb_struct b[2];
@@ -65,7 +65,7 @@ acb_hypgeom_erf_1f1a(acb_t res, const acb_t z, long prec)
 
 /* REAL: erf(x) = 2x/sqrt(pi) * exp(-x^2) 1F1(1, 3/2, x^2) */
 void
-acb_hypgeom_erf_1f1b(acb_t res, const acb_t z, long prec)
+acb_hypgeom_erf_1f1b(acb_t res, const acb_t z, slong prec)
 {
     acb_t a, b, t, w;
 
@@ -99,7 +99,7 @@ acb_hypgeom_erf_1f1b(acb_t res, const acb_t z, long prec)
 }
 
 void
-acb_hypgeom_erf_asymp(acb_t res, const acb_t z, long prec, long prec2)
+acb_hypgeom_erf_asymp(acb_t res, const acb_t z, slong prec, slong prec2)
 {
     acb_t a, t, u;
 
@@ -150,10 +150,10 @@ acb_hypgeom_erf_asymp(acb_t res, const acb_t z, long prec, long prec2)
 }
 
 void
-acb_hypgeom_erf(acb_t res, const acb_t z, long prec)
+acb_hypgeom_erf(acb_t res, const acb_t z, slong prec)
 {
     double x, y, absz2, logz;
-    long prec2;
+    slong prec2;
 
     if (!acb_is_finite(z))
     {
@@ -191,7 +191,7 @@ acb_hypgeom_erf(acb_t res, const acb_t z, long prec)
     {
         /* If the asymptotic term is small, we can
            compute with reduced precision */
-        prec2 = prec + 4 + (y*y - x*x - logz) * 1.4426950408889634074;
+        prec2 = FLINT_MIN(prec + 4 + (y*y - x*x - logz) * 1.4426950408889634074, (double) prec);
         prec2 = FLINT_MAX(8, prec2);
         prec2 = FLINT_MIN(prec2, prec);
 

@@ -26,7 +26,7 @@
 #include "acb_hypgeom.h"
 
 void
-acb_hypgeom_m_asymp(acb_t res, const acb_t a, const acb_t b, const acb_t z, int regularized, long prec)
+acb_hypgeom_m_asymp(acb_t res, const acb_t a, const acb_t b, const acb_t z, int regularized, slong prec)
 {
     acb_t t, u, v, c;
 
@@ -72,6 +72,11 @@ acb_hypgeom_m_asymp(acb_t res, const acb_t a, const acb_t b, const acb_t z, int 
         acb_mul(t, t, v, prec);
     }
 
+    if (acb_is_real(a) && acb_is_real(b) && acb_is_real(z))
+    {
+        arb_zero(acb_imagref(t));
+    }
+
     acb_swap(res, t);
 
     acb_clear(t);
@@ -81,7 +86,7 @@ acb_hypgeom_m_asymp(acb_t res, const acb_t a, const acb_t b, const acb_t z, int 
 }
 
 static void
-_acb_hypgeom_m_1f1(acb_t res, const acb_t a, const acb_t b, const acb_t z, long prec)
+_acb_hypgeom_m_1f1(acb_t res, const acb_t a, const acb_t b, const acb_t z, slong prec)
 {
     if (acb_is_one(a))
     {
@@ -103,7 +108,7 @@ _acb_hypgeom_m_1f1(acb_t res, const acb_t a, const acb_t b, const acb_t z, long 
 }
 
 void
-acb_hypgeom_m_1f1(acb_t res, const acb_t a, const acb_t b, const acb_t z, int regularized, long prec)
+acb_hypgeom_m_1f1(acb_t res, const acb_t a, const acb_t b, const acb_t z, int regularized, slong prec)
 {
     acb_t t;
 
@@ -144,10 +149,10 @@ acb_hypgeom_m_1f1(acb_t res, const acb_t a, const acb_t b, const acb_t z, int re
 }
 
 void
-acb_hypgeom_m(acb_t res, const acb_t a, const acb_t b, const acb_t z, int regularized, long prec)
+acb_hypgeom_m(acb_t res, const acb_t a, const acb_t b, const acb_t z, int regularized, slong prec)
 {
-    long m = LONG_MAX;
-    long n = LONG_MAX;
+    slong m = WORD_MAX;
+    slong n = WORD_MAX;
 
     if (acb_is_int(a) &&
             arf_cmpabs_2exp_si(arb_midref(acb_realref(a)), 30) < 0)

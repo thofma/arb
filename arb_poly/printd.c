@@ -26,21 +26,21 @@
 #include "arb_poly.h"
 
 void
-arb_poly_printd(const arb_poly_t poly, long digits)
+arb_poly_printd(const arb_poly_t poly, slong digits)
 {
-    long i;
+    slong i;
 
-    printf("[");
+    flint_printf("[");
 
     for (i = 0; i < poly->length; i++)
     {
-        printf("(");
+        flint_printf("(");
         arb_printd(poly->coeffs + i, digits);
-        printf(")");
+        flint_printf(")");
         
         if (i + 1 < poly->length)
-            printf(", ");
+            flint_printf(", ");
     }
 
-    printf("]");
+    flint_printf("]");
 }

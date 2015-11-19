@@ -31,7 +31,7 @@ arb_mat_transpose(arb_mat_t B, const arb_mat_t A)
     arb_struct tmp;
     slong i, j;
 
-    if (B->r != A->c || B->c != A->r)
+    if (arb_mat_nrows(B) != arb_mat_ncols(A) || arb_mat_ncols(B) != arb_mat_nrows(A))
     {
         flint_printf("Exception (arb_mat_transpose). Incompatible dimensions.\n");
         abort();
@@ -39,19 +39,21 @@ arb_mat_transpose(arb_mat_t B, const arb_mat_t A)
 
     if (A == B)  /* In-place, guaranteed to be square */
     {
-        for (i = 0; i < A->r - 1; i++)
-            for (j = i + 1; j < A->c; j++)
+        for (i = 0; i < arb_mat_nrows(A) - 1; i++)
+        {
+            for (j = i + 1; j < arb_mat_ncols(A); j++)
             {
-                tmp = A->rows[i][j];
-                A->rows[i][j] = A->rows[j][i];
-                A->rows[j][i] = tmp;
+                tmp = *arb_mat_entry(A, i, j);
+                *arb_mat_entry(A, i, j) = *arb_mat_entry(A, j, i);
+                *arb_mat_entry(A, j, i) = tmp;
             }
+        }
     }
     else  /* Not aliased; general case */
     {
-        for (i = 0; i < B->r; i++)
-            for (j = 0; j < B->c; j++)
-                arb_set(&B->rows[i][j], &A->rows[j][i]);
+        for (i = 0; i < arb_mat_nrows(B); i++)
+            for (j = 0; j < arb_mat_ncols(B); j++)
+                arb_set(arb_mat_entry(B, i, j), arb_mat_entry(A, j, i));
     }
 }
 

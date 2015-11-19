@@ -25,13 +25,13 @@
 
 #include "acb_poly.h"
 
-static ulong choose_M(ulong N, long target)
+static ulong choose_M(ulong N, slong target)
 {
     return FLINT_MIN(N, target + N / 100);
 }
 
 void
-_acb_poly_zeta_em_choose_param(mag_t bound, ulong * N, ulong * M, const acb_t s, const acb_t a, long d, long target, long prec)
+_acb_poly_zeta_em_choose_param(mag_t bound, ulong * N, ulong * M, const acb_t s, const acb_t a, slong d, slong target, slong prec)
 {
     ulong A, B, C, limit;
     mag_t Abound, Bbound, Cbound, tol;
@@ -49,7 +49,7 @@ _acb_poly_zeta_em_choose_param(mag_t bound, ulong * N, ulong * M, const acb_t s,
 
     /* Hack: allow evaluation very high up in the critical strip... */
     if (arf_cmpabs_2exp_si(arb_midref(acb_imagref(s)), 10) > 0)
-        limit = ULONG_MAX / 4;
+        limit = UWORD_MAX / 4;
     else
         limit = 100 * target;  /* but normally, fail more quickly */
 

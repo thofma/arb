@@ -43,7 +43,7 @@ Types, macros and constants
 Memory management
 -------------------------------------------------------------------------------
 
-.. function:: void arb_mat_init(arb_mat_t mat, long r, long c)
+.. function:: void arb_mat_init(arb_mat_t mat, slong r, slong c)
 
     Initializes the matrix, setting it to the zero matrix with *r* rows
     and *c* columns.
@@ -60,14 +60,16 @@ Conversions
 
 .. function:: void arb_mat_set_fmpz_mat(arb_mat_t dest, const fmpz_mat_t src)
 
-.. function:: void arb_mat_set_fmpq_mat(arb_mat_t dest, const fmpq_mat_t src, long prec)
+.. function:: void arb_mat_set_round_fmpz_mat(arb_mat_t dest, const fmpz_mat_t src, slong prec)
+
+.. function:: void arb_mat_set_fmpq_mat(arb_mat_t dest, const fmpq_mat_t src, slong prec)
 
     Sets *dest* to *src*. The operands must have identical dimensions.
 
 Random generation
 -------------------------------------------------------------------------------
 
-.. function:: void arb_mat_randtest(arb_mat_t mat, flint_rand_t state, long prec, long mag_bits)
+.. function:: void arb_mat_randtest(arb_mat_t mat, flint_rand_t state, slong prec, slong mag_bits)
 
     Sets *mat* to a random matrix with up to *prec* bits of precision
     and with exponents of width up to *mag_bits*.
@@ -75,7 +77,7 @@ Random generation
 Input and output
 -------------------------------------------------------------------------------
 
-.. function:: void arb_mat_printd(const arb_mat_t mat, long digits)
+.. function:: void arb_mat_printd(const arb_mat_t mat, slong digits)
 
     Prints each entry in the matrix with the specified number of decimal digits.
 
@@ -101,6 +103,13 @@ Comparisons
     Returns nonzero iff the matrices have the same dimensions and each entry
     in *mat2* is contained in the corresponding entry in *mat1*.
 
+.. function:: int arb_mat_eq(const arb_mat_t mat1, const arb_mat_t mat2)
+
+    Returns nonzero iff *mat1* and *mat2* certainly represent the same matrix.
+
+.. function:: int arb_mat_ne(const arb_mat_t mat1, const arb_mat_t mat2)
+
+    Returns nonzero iff *mat1* and *mat2* certainly do not represent the same matrix.
 
 Special matrices
 -------------------------------------------------------------------------------
@@ -114,6 +123,13 @@ Special matrices
     Sets the entries on the main diagonal to ones,
     and all other entries to zero.
 
+Transpose
+-------------------------------------------------------------------------------
+
+.. function:: void arb_mat_transpose(arb_mat_t dest, const arb_mat_t src)
+
+    Sets *dest* to the exact transpose *src*. The operands must have
+    compatible dimensions. Aliasing is allowed.
 
 Norms
 -------------------------------------------------------------------------------
@@ -131,20 +147,20 @@ Arithmetic
     Sets *dest* to the exact negation of *src*. The operands must have
     the same dimensions.
 
-.. function:: void arb_mat_add(arb_mat_t res, const arb_mat_t mat1, const arb_mat_t mat2, long prec)
+.. function:: void arb_mat_add(arb_mat_t res, const arb_mat_t mat1, const arb_mat_t mat2, slong prec)
 
     Sets res to the sum of *mat1* and *mat2*. The operands must have the same dimensions.
 
-.. function:: void arb_mat_sub(arb_mat_t res, const arb_mat_t mat1, const arb_mat_t mat2, long prec)
+.. function:: void arb_mat_sub(arb_mat_t res, const arb_mat_t mat1, const arb_mat_t mat2, slong prec)
 
     Sets *res* to the difference of *mat1* and *mat2*. The operands must have
     the same dimensions.
 
-.. function:: void arb_mat_mul_classical(arb_mat_t C, const arb_mat_t A, const arb_mat_t B, long prec)
+.. function:: void arb_mat_mul_classical(arb_mat_t C, const arb_mat_t A, const arb_mat_t B, slong prec)
 
-.. function:: void arb_mat_mul_threaded(arb_mat_t C, const arb_mat_t A, const arb_mat_t B, long prec)
+.. function:: void arb_mat_mul_threaded(arb_mat_t C, const arb_mat_t A, const arb_mat_t B, slong prec)
 
-.. function:: void arb_mat_mul(arb_mat_t res, const arb_mat_t mat1, const arb_mat_t mat2, long prec)
+.. function:: void arb_mat_mul(arb_mat_t res, const arb_mat_t mat1, const arb_mat_t mat2, slong prec)
 
     Sets *res* to the matrix product of *mat1* and *mat2*. The operands must have
     compatible dimensions for matrix multiplication.
@@ -155,7 +171,7 @@ Arithmetic
     if the matrices are sufficiently large and more than one thread
     can be used.
 
-.. function:: void arb_mat_pow_ui(arb_mat_t res, const arb_mat_t mat, ulong exp, long prec)
+.. function:: void arb_mat_pow_ui(arb_mat_t res, const arb_mat_t mat, ulong exp, slong prec)
 
     Sets *res* to *mat* raised to the power *exp*. Requires that *mat*
     is a square matrix.
@@ -164,31 +180,31 @@ Arithmetic
 Scalar arithmetic
 -------------------------------------------------------------------------------
 
-.. function:: void arb_mat_scalar_mul_2exp_si(arb_mat_t B, const arb_mat_t A, long c)
+.. function:: void arb_mat_scalar_mul_2exp_si(arb_mat_t B, const arb_mat_t A, slong c)
 
     Sets *B* to *A* multiplied by `2^c`.
 
-.. function:: void arb_mat_scalar_addmul_si(arb_mat_t B, const arb_mat_t A, long c, long prec)
+.. function:: void arb_mat_scalar_addmul_si(arb_mat_t B, const arb_mat_t A, slong c, slong prec)
 
-.. function:: void arb_mat_scalar_addmul_fmpz(arb_mat_t B, const arb_mat_t A, const fmpz_t c, long prec)
+.. function:: void arb_mat_scalar_addmul_fmpz(arb_mat_t B, const arb_mat_t A, const fmpz_t c, slong prec)
 
-.. function:: void arb_mat_scalar_addmul_arb(arb_mat_t B, const arb_mat_t A, const arb_t c, long prec)
+.. function:: void arb_mat_scalar_addmul_arb(arb_mat_t B, const arb_mat_t A, const arb_t c, slong prec)
 
     Sets *B* to `B + A \times c`.
 
-.. function:: void arb_mat_scalar_mul_si(arb_mat_t B, const arb_mat_t A, long c, long prec)
+.. function:: void arb_mat_scalar_mul_si(arb_mat_t B, const arb_mat_t A, slong c, slong prec)
 
-.. function:: void arb_mat_scalar_mul_fmpz(arb_mat_t B, const arb_mat_t A, const fmpz_t c, long prec)
+.. function:: void arb_mat_scalar_mul_fmpz(arb_mat_t B, const arb_mat_t A, const fmpz_t c, slong prec)
 
-.. function:: void arb_mat_scalar_mul_arb(arb_mat_t B, const arb_mat_t A, const arb_t c, long prec)
+.. function:: void arb_mat_scalar_mul_arb(arb_mat_t B, const arb_mat_t A, const arb_t c, slong prec)
 
     Sets *B* to `A \times c`.
 
-.. function:: void arb_mat_scalar_div_si(arb_mat_t B, const arb_mat_t A, long c, long prec)
+.. function:: void arb_mat_scalar_div_si(arb_mat_t B, const arb_mat_t A, slong c, slong prec)
 
-.. function:: void arb_mat_scalar_div_fmpz(arb_mat_t B, const arb_mat_t A, const fmpz_t c, long prec)
+.. function:: void arb_mat_scalar_div_fmpz(arb_mat_t B, const arb_mat_t A, const fmpz_t c, slong prec)
 
-.. function:: void arb_mat_scalar_div_arb(arb_mat_t B, const arb_mat_t A, const arb_t c, long prec)
+.. function:: void arb_mat_scalar_div_arb(arb_mat_t B, const arb_mat_t A, const arb_t c, slong prec)
 
     Sets *B* to `A / c`.
 
@@ -196,7 +212,7 @@ Scalar arithmetic
 Gaussian elimination and solving
 -------------------------------------------------------------------------------
 
-.. function:: int arb_mat_lu(long * perm, arb_mat_t LU, const arb_mat_t A, long prec)
+.. function:: int arb_mat_lu(slong * perm, arb_mat_t LU, const arb_mat_t A, slong prec)
 
     Given an `n \times n` matrix `A`, computes an LU decomposition `PLU = A`
     using Gaussian elimination with partial pivoting.
@@ -216,13 +232,13 @@ Gaussian elimination and solving
     computed to insufficient precision, or the LU decomposition was
     attempted at insufficient precision.
 
-.. function:: void arb_mat_solve_lu_precomp(arb_mat_t X, const long * perm, const arb_mat_t LU, const arb_mat_t B, long prec)
+.. function:: void arb_mat_solve_lu_precomp(arb_mat_t X, const slong * perm, const arb_mat_t LU, const arb_mat_t B, slong prec)
 
     Solves `AX = B` given the precomputed nonsingular LU decomposition `A = PLU`.
     The matrices `X` and `B` are allowed to be aliased with each other,
     but `X` is not allowed to be aliased with `LU`.
 
-.. function:: int arb_mat_solve(arb_mat_t X, const arb_mat_t A, const arb_mat_t B, long prec)
+.. function:: int arb_mat_solve(arb_mat_t X, const arb_mat_t A, const arb_mat_t B, slong prec)
 
     Solves `AX = B` where `A` is a nonsingular `n \times n` matrix
     and `X` and `B` are `n \times m` matrices, using LU decomposition.
@@ -233,7 +249,7 @@ Gaussian elimination and solving
     value guarantees that `A` is invertible and that the exact solution
     matrix is contained in the output.
 
-.. function:: int arb_mat_inv(arb_mat_t X, const arb_mat_t A, long prec)
+.. function:: int arb_mat_inv(arb_mat_t X, const arb_mat_t A, slong prec)
 
     Sets `X = A^{-1}` where `A` is a square matrix, computed by solving
     the system `AX = I`.
@@ -244,7 +260,7 @@ Gaussian elimination and solving
     A nonzero return value guarantees that the matrix is invertible
     and that the exact inverse is contained in the output.
 
-.. function:: void arb_mat_det(arb_t det, const arb_mat_t A, long prec)
+.. function:: void arb_mat_det(arb_t det, const arb_mat_t A, slong prec)
 
     Computes the determinant of the matrix, using Gaussian elimination
     with partial pivoting. If at some point an invertible pivot element
@@ -255,9 +271,9 @@ Gaussian elimination and solving
 Characteristic polynomial
 -------------------------------------------------------------------------------
 
-.. function:: void _arb_mat_charpoly(arb_ptr cp, const arb_mat_t mat, long prec)
+.. function:: void _arb_mat_charpoly(arb_ptr cp, const arb_mat_t mat, slong prec)
 
-.. function:: void arb_mat_charpoly(arb_poly_t cp, const arb_mat_t mat, long prec)
+.. function:: void arb_mat_charpoly(arb_poly_t cp, const arb_mat_t mat, slong prec)
 
     Sets *cp* to the characteristic polynomial of *mat* which must be
     a square matrix. If the matrix has *n* rows, the underscore method
@@ -267,7 +283,7 @@ Characteristic polynomial
 Special functions
 -------------------------------------------------------------------------------
 
-.. function:: void arb_mat_exp(arb_mat_t B, const arb_mat_t A, long prec)
+.. function:: void arb_mat_exp(arb_mat_t B, const arb_mat_t A, slong prec)
 
     Sets *B* to the exponential of the matrix *A*, defined by the Taylor series
 
@@ -276,9 +292,17 @@ Special functions
         \exp(A) = \sum_{k=0}^{\infty} \frac{A^k}{k!}.
 
     The function is evaluated as `\exp(A/2^r)^{2^r}`, where `r` is chosen
-    to give rapid convergence of the Taylor series. The series is
+    to give rapid convergence. The series is
     evaluated using rectangular splitting.
-    If `\|A/2^r\| \le c` and `N \ge 2c`, we bound the entrywise error
-    when truncating the Taylor series before term `N` by `2 c^N / N!`.
 
+    The elementwise error when truncating the Taylor series after *N*
+    terms is bounded by the error in the infinity norm, for which we have
+
+    .. math ::
+        \left\|\exp(2^{-r}A) - \sum_{k=0}^{N-1}
+            \frac{\left(2^{-r} A\right)^k}{k!} \right\|_{\infty} =
+        \left\|\sum_{k=N}^{\infty} \frac{\left(2^{-r} A\right)^k}{k!}\right\|_{\infty} \le
+          \sum_{k=N}^{\infty} \frac{(2^{-r} \|A\|_{\infty})^k}{k!}.
+
+    We bound the sum on the right using :func:`mag_exp_tail`.
 
