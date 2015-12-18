@@ -171,6 +171,13 @@ Arithmetic
     if the matrices are sufficiently large and more than one thread
     can be used.
 
+.. function:: void arb_mat_sqr_classical(arb_mat_t B, const arb_mat_t A, slong prec)
+
+.. function:: void arb_mat_sqr(arb_mat_t res, const arb_mat_t mat, slong prec)
+
+   Sets *res* to the matrix square of *mat*. The operands must both be square
+   with the same dimensions.
+
 .. function:: void arb_mat_pow_ui(arb_mat_t res, const arb_mat_t mat, ulong exp, slong prec)
 
     Sets *res* to *mat* raised to the power *exp*. Requires that *mat*
@@ -306,3 +313,7 @@ Special functions
 
     We bound the sum on the right using :func:`mag_exp_tail`.
 
+.. function:: void arb_mat_trace(arb_t trace, const arb_mat_t mat, slong prec)
+
+    Sets *trace* to the trace of the matrix, i.e. the sum of entries on the
+    main diagonal of *mat*. The matrix is required to be square.

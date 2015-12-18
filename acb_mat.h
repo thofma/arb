@@ -141,6 +141,8 @@ void acb_mat_sub(acb_mat_t res, const acb_mat_t mat1, const acb_mat_t mat2, slon
 
 void acb_mat_mul(acb_mat_t res, const acb_mat_t mat1, const acb_mat_t mat2, slong prec);
 
+void acb_mat_sqr(acb_mat_t res, const acb_mat_t mat, slong prec);
+
 void acb_mat_pow_ui(acb_mat_t B, const acb_mat_t A, ulong exp, slong prec);
 
 /* Scalar arithmetic */
@@ -319,6 +321,8 @@ void acb_mat_exp(acb_mat_t B, const acb_mat_t A, slong prec);
 void _acb_mat_charpoly(acb_ptr cp, const acb_mat_t mat, slong prec);
 
 void acb_mat_charpoly(acb_poly_t cp, const acb_mat_t mat, slong prec);
+
+void acb_mat_trace(acb_t trace, const acb_mat_t mat, slong prec);
 
 #ifdef __cplusplus
 }

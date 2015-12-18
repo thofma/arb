@@ -23,36 +23,38 @@
 
 ******************************************************************************/
 
-#include "arb.h"
+#include "acb.h"
 
 void
-arb_asinh(arb_t z, const arb_t x, slong prec)
+acb_root_ui(acb_t res, const acb_t z, ulong n, slong prec)
 {
-    if (arb_is_zero(x))
+    if (n == 0)
     {
-        arb_zero(z);
+        acb_indeterminate(res);
+    }
+    else if (n == 1)
+    {
+        acb_set_round(res, z, prec);
+    }
+    else if (n == 2)
+    {
+        acb_sqrt(res, z, prec);
+    }
+    else if (n == 4)
+    {
+        acb_sqrt(res, z, prec + 4);
+        acb_sqrt(res, res, prec);
+    }
+    else if (acb_is_real(z) && arb_is_nonnegative(acb_realref(z)))
+    {
+        arb_root(acb_realref(res), acb_realref(z), n, prec);
+        arb_zero(acb_imagref(res));
     }
     else
     {
-        arb_t t;
-        arb_init(t);
-
-        arb_mul(t, x, x, prec + 4);
-        arb_sqrt1pm1(t, t, prec + 4);
-
-        if (arf_sgn(arb_midref(x)) >= 0)
-        {
-            arb_add(t, t, x, prec + 4);
-            arb_log1p(z, t, prec);
-        }
-        else
-        {
-            arb_sub(t, t, x, prec + 4);
-            arb_log1p(z, t, prec);
-            arb_neg(z, z);
-        }
-
-        arb_clear(t);
+        acb_log(res, z, prec + 4);
+        acb_div_ui(res, res, n, prec + 4);
+        acb_exp(res, res, prec);
     }
 }
 

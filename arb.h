@@ -576,7 +576,8 @@ void arb_pow_fmpq(arb_t y, const arb_t x, const fmpq_t a, slong prec);
 
 void arb_div_2expm1_ui(arb_t z, const arb_t x, ulong n, slong prec);
 void arb_pow(arb_t z, const arb_t x, const arb_t y, slong prec);
-void arb_root(arb_t z, const arb_t x, ulong k, slong prec);
+void arb_root_ui(arb_t z, const arb_t x, ulong k, slong prec);
+void arb_root(arb_t z, const arb_t x, ulong k, slong prec); /* back compat */
 void arb_log(arb_t z, const arb_t x, slong prec);
 void arb_log_arf(arb_t z, const arf_t x, slong prec);
 void arb_log_ui(arb_t z, ulong x, slong prec);
@@ -601,6 +602,7 @@ void _arb_sin_cos_pi_fmpq_algebraic(arb_t s, arb_t c, ulong p, ulong q, slong pr
 void arb_sin_cos_pi_fmpq(arb_t s, arb_t c, const fmpq_t x, slong prec);
 void arb_sin_pi_fmpq(arb_t s, const fmpq_t x, slong prec);
 void arb_cos_pi_fmpq(arb_t c, const fmpq_t x, slong prec);
+void arb_sinc(arb_t z, const arb_t x, slong prec);
 void arb_sinh(arb_t z, const arb_t x, slong prec);
 void arb_cosh(arb_t z, const arb_t x, slong prec);
 void arb_sinh_cosh(arb_t s, arb_t c, const arb_t x, slong prec);
@@ -638,9 +640,7 @@ void arb_gamma_fmpq(arb_t z, const fmpq_t x, slong prec);
 void arb_gamma_fmpz(arb_t z, const fmpz_t x, slong prec);
 void arb_digamma(arb_t y, const arb_t x, slong prec);
 void arb_zeta(arb_t z, const arb_t s, slong prec);
-void arb_zeta_ui(arb_t z, ulong n, slong prec);
 void arb_hurwitz_zeta(arb_t z, const arb_t s, const arb_t a, slong prec);
-void arb_bernoulli_ui(arb_t z, ulong n, slong prec);
 
 void arb_rising_ui_bs(arb_t y, const arb_t x, ulong n, slong prec);
 void arb_rising_ui_rs(arb_t y, const arb_t x, ulong n, ulong m, slong prec);
