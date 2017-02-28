@@ -57,7 +57,7 @@ choose_n(double log2z, double argz, int digamma, slong prec)
         if (boundn > 1)
         {
             flint_printf("exception: gamma_stirling_choose_param failed to converge\n");
-            abort();
+            flint_abort();
         }
     }
 }
@@ -650,7 +650,7 @@ arb_gamma_small_frac(arb_t y, unsigned int p, unsigned int q, slong prec)
     else
     {
         flint_printf("small fraction not implemented!\n");
-        abort();
+        flint_abort();
     }
 }
 
@@ -683,7 +683,7 @@ arb_gamma_fmpq_outward(arb_t y, const fmpq_t x, slong prec)
     if (!fmpz_fits_si(n))
     {
         flint_printf("gamma: too large fmpq to reduce to 0!\n");
-        abort();
+        flint_abort();
     }
 
     m = fmpz_get_si(n);
@@ -699,7 +699,7 @@ arb_gamma_fmpq_outward(arb_t y, const fmpq_t x, slong prec)
     else
     {
         flint_printf("arb_gamma_fmpq: invalid fraction\n");
-        abort();
+        flint_abort();
     }
 
     /* argument reduction */

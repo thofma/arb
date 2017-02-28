@@ -51,7 +51,7 @@ _fmprb_get_rand_fmpq(fmpz_t num, fmpz_t den, flint_rand_t state,
     if (COEFF_IS_MPZ(*exp))
     {
         flint_printf("exception: fmprb_get_rand_fmpq: too large exponent\n");
-        abort();
+        flint_abort();
     }
 
     if (*exp >= 0)

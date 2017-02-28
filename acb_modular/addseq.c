@@ -149,7 +149,7 @@ acb_modular_addseq_theta(slong * exponents, slong * aindex, slong * bindex, slon
                 continue;
 
             flint_printf("i = %wd, c = %wu: bad addition sequence!\n", i, c);
-            abort();
+            flint_abort();
         }
     }
 }
@@ -185,7 +185,7 @@ acb_modular_addseq_eta(slong * exponents, slong * aindex, slong * bindex, slong 
                 continue;
 
             flint_printf("i = %wd, c = %wu: bad addition sequence!\n", i, c);
-            abort();
+            flint_abort();
         }
     }
 }

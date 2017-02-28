@@ -43,7 +43,7 @@ arb_poly_revert_series(arb_poly_t Qinv,
     {
         flint_printf("Exception (arb_poly_revert_series). Input must \n"
                "have zero constant term and nonzero coefficient of x^1.\n");
-        abort();
+        flint_abort();
     }
 
     if (Qinv != Q)

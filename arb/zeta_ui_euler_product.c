@@ -71,7 +71,7 @@ arb_zeta_inv_ui_euler_product(arb_t z, ulong s, slong prec)
     if (s < 6)
     {
         flint_printf("too small s!\n");
-        abort();
+        flint_abort();
     }
 
     /* heuristic */
