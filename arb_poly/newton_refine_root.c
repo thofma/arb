@@ -55,7 +55,7 @@ _arb_poly_newton_refine_root(arb_t r, arb_srcptr poly, slong len,
         if (iters == FLINT_BITS)
         {
             flint_printf("newton_refine_root: initial value too imprecise\n");
-            abort();
+            flint_abort();
         }
     }
 

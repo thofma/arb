@@ -99,7 +99,7 @@ _acb_hypgeom_2f1_transform_limit(acb_t res, const acb_poly_t a, const acb_poly_t
     else
     {
         flint_printf("invalid transformation!\n");
-        abort();
+        flint_abort();
     }
 
     /* gamma factors */
@@ -323,7 +323,7 @@ acb_hypgeom_2f1_transform_nolimit(acb_t res, const acb_t a, const acb_t b,
     else
     {
         flint_printf("invalid transformation!\n");
-        abort();
+        flint_abort();
     }
 
     /* gamma factors */

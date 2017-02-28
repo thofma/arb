@@ -153,7 +153,7 @@ arb_mat_exp(arb_mat_t B, const arb_mat_t A, slong prec)
     if (dim != arb_mat_ncols(A))
     {
         flint_printf("arb_mat_exp: a square matrix is required!\n");
-        abort();
+        flint_abort();
     }
 
     if (dim == 0)

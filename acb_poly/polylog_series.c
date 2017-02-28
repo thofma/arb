@@ -25,7 +25,7 @@
 
 #include "acb_poly.h"
 
-/* note: will not return a wrong value, as arf_get_si aborts on overflow */
+/* note: will not return a wrong value, as arf_get_si flint_aborts on overflow */
 slong
 arb_get_si_lower(const arb_t x)
 {
