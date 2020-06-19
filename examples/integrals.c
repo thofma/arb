@@ -19,6 +19,60 @@
 /*  Example integrands                                                       */
 /* ------------------------------------------------------------------------- */
 
+int
+f_tommy(acb_ptr res, const acb_t z, void * param, slong order, slong prec)
+{
+    /* CC(log(RR(0.5) + I*x)) / CC((exp(-PI*x) + exp(PI*x))^2) */
+    acb_t t;
+    acb_t t2;
+    acb_t t3;
+    acb_t t4;
+    acb_t pi;
+
+    if (order > 1)
+        flint_abort();  /* Would be needed for Taylor method. */
+
+    acb_init(t);
+    acb_init(t2);
+    acb_init(t3);
+    acb_init(t4);
+    acb_init(pi);
+
+    acb_set_si(t, 2);
+    acb_inv(t, t, prec);
+
+    acb_set_si_si(t2, 0, 1);
+    acb_mul(t2, t2, z, prec);
+
+    acb_add(t, t, t2, prec);
+
+    acb_log(t, t, prec);
+
+    acb_const_pi(pi, prec);
+
+    acb_mul(t2, pi, z, prec);
+
+    acb_exp(t3, t2, prec);
+
+    acb_neg(t2, t2);
+
+    acb_exp(t4, t2, prec);
+
+    acb_add(t3, t3, t4, prec);
+
+    acb_pow_si(t3, t3, 2, prec);
+
+    acb_div(res, t, t3, prec);
+
+    acb_clear(t);
+    acb_clear(t2);
+    acb_clear(t3);
+    acb_clear(t4);
+    acb_clear(pi);
+
+    return 0;
+}
+
 /* f(z) = sin(z) */
 int
 f_sin(acb_ptr res, const acb_t z, void * param, slong order, slong prec)
@@ -721,7 +775,7 @@ scaled_bessel_select_N(arb_t N, ulong k, slong prec)
 /*  Main test program                                                        */
 /* ------------------------------------------------------------------------- */
 
-#define NUM_INTEGRALS 36
+#define NUM_INTEGRALS 37
 
 const char * descr[NUM_INTEGRALS] =
 {
@@ -761,6 +815,7 @@ const char * descr[NUM_INTEGRALS] =
     "int_0^{inf} exp(-x) I_0(x/3)^3 dx   (using domain truncation)",
     "int_0^{inf} exp(-x) I_0(x/15)^{15} dx   (using domain truncation)",
     "int_{-1-i}^{-1+i} 1/sqrt(x) dx",
+    "int_{0}^{1} tommy dx",
 };
 
 int main(int argc, char *argv[])
@@ -1236,6 +1291,12 @@ int main(int argc, char *argv[])
                 acb_set_d_d(a, -1, -1);
                 acb_set_d_d(b, -1, 1);
                 acb_calc_integrate(s, f_rsqrt, NULL, a, b, goal, tol, options, prec);
+                break;
+
+            case 36:
+                acb_set_d(a, 0);
+                acb_set_d(b, 1);
+                acb_calc_integrate(s, f_tommy, NULL, a, b, goal, tol, options, prec);
                 break;
 
             default:
